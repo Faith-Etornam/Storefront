@@ -11,8 +11,31 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 from .filters import ProductFilter
-from .models import Cart, CartItem, Collection, Customer, Order, OrderItem, Product, Review
-from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CollectionSerializer, CreateOrderSerializer, CustomerSerializer, OrderSerializer, ProductSerializer, ReviewSerializer, UpdateCartItemSerializer, UpdateOrderSerializer
+from .models import (
+    Cart, 
+    CartItem, 
+    Collection, 
+    Customer, 
+    Order, 
+    OrderItem, 
+    Product, 
+    Review, 
+    ProductImage
+)
+from .serializers import (
+    AddCartItemSerializer, 
+    CartItemSerializer, 
+    CartSerializer, 
+    CollectionSerializer, 
+    CreateOrderSerializer, 
+    CustomerSerializer, 
+    OrderSerializer, 
+    ProductSerializer, 
+    ReviewSerializer, 
+    UpdateCartItemSerializer, 
+    UpdateOrderSerializer, 
+    ProductImageSerializer
+)
 
 
 class ProductViewSet(ModelViewSet):
@@ -34,6 +57,15 @@ class ProductViewSet(ModelViewSet):
 
         return super().destroy(request, *args, **kwargs)
 
+
+class ProductImageViewSet(ModelViewSet):
+    serializer_class = ProductImageSerializer
+
+    def get_queryset(self):
+        return ProductImage.objects.filter(product_id=self.kwargs['product_pk'])
+    
+    def perform_create(self, serializer):
+        serializer.save(product_id=self.kwargs['product_pk'])
 
 class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(
